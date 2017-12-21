@@ -145,7 +145,12 @@ public class MyCheckersActivity extends AppCompatActivity {
     // prepare a human or computer turn
     public void prepTurn() {
         Board board = gamelogic.getBoard();
-        final MediaPlayer sound=MediaPlayer.create(this,R.raw.win);
+
+        final MediaPlayer tick=MediaPlayer.create(this,R.raw.tick);
+        final MediaPlayer tack=MediaPlayer.create(this,R.raw.wosh);
+        final MediaPlayer lost=MediaPlayer.create(this,R.raw.sad);
+        final MediaPlayer win=MediaPlayer.create(this,R.raw.win);
+
         selectedPiece = null;
         selectedPosition = null;
         selectablePieces = null;
@@ -157,7 +162,7 @@ public class MyCheckersActivity extends AppCompatActivity {
 
         if (turn == CheckersGame.RED) {
             statusText.setText("Red's (computer's) turn. Difficulty: "+prefDifficulty);
-
+            tack.start();
             // run the CPU AI on another thread
             computerTask = new ComputerTurn(this, gamelogic, prefDifficulty, prefAllowAnyMove);
             computerTask.execute();
@@ -165,7 +170,7 @@ public class MyCheckersActivity extends AppCompatActivity {
         } else if (turn == CheckersGame.BLACK) {
 
             statusText.setText("Black's (player's) turn.");
-
+            tick.start();
             // prep for human player turn
             ArrayList<Piece> selectablePieces = new ArrayList<>();
             Move moves[] = gamelogic.getMoves();
@@ -184,7 +189,7 @@ public class MyCheckersActivity extends AppCompatActivity {
             );
 
             if (selectablePieces.size() == 0) {
-               sound.start();
+                lost.start();
                 statusText.setText("You lost!");
             }
         }
@@ -225,7 +230,8 @@ public class MyCheckersActivity extends AppCompatActivity {
             } else {
                 // sound.start();player wins
                // sound.start();
-                sound.start();
+                //wind.start();
+
                 statusText.setText("You won!");
             }
         }

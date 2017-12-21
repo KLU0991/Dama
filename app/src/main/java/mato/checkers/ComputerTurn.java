@@ -1,9 +1,10 @@
 package mato.checkers;
-
+//TODO
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
-
+import android.media.MediaPlayer;
 import mato.checkers.game.CheckersGame;
 import mato.checkers.game.Board;
 import mato.checkers.game.Piece;
@@ -31,40 +32,7 @@ public class ComputerTurn extends AsyncTask<String, String, String>
         selectedMove = null;
     }
 
-    protected int minimax(Board base, int turn, int depth)
-    {
-        int oppositeTurn = (turn == CheckersGame.RED ? CheckersGame.BLACK : CheckersGame.RED);
-        Move[] baseMoves = base.getMoves(turn, allowAnyMove);
 
-        int score = 999;
-
-        int[][] data = base.saveBoard();
-        for (Move move : baseMoves)
-        {
-            Board specificBoard = new Board(data);
-            specificBoard.makeMove(move);
-
-            int moveScore;
-            if (depth > 0) {
-                moveScore = minimax(specificBoard, oppositeTurn, depth - 1);
-            } else {
-                moveScore = specificBoard.pseudoScore();
-            }
-
-            if (score == 999) {
-                score = moveScore;
-            }
-
-            if (turn == CheckersGame.RED) {
-                // MIN
-                score = (moveScore < score) ? moveScore : score;
-            } else if (turn == CheckersGame.BLACK) {
-                // MAX
-                score = (moveScore > score) ? moveScore : score;
-            }
-        }
-        return score;
-    }
 
     protected Move Minimax(int depth)
     {
@@ -74,19 +42,13 @@ public class ComputerTurn extends AsyncTask<String, String, String>
         int[][] data = realBoard.saveBoard();
 
         ArrayList<Move> bestMoves = new ArrayList<>();
-        int bestScore = 1000;
+
 
         for (Move move : moves) {
             Board moveBoard = new Board(data);
             moveBoard.makeMove(move);
-            int score = minimax(moveBoard, CheckersGame.BLACK, depth);
-            if (score < bestScore) {
                 bestMoves.clear();
-                bestScore = score;
-            }
-            if (score == bestScore) {
-                bestMoves.add(move);
-            }
+
         }
 
         int randomIndex = (int)(Math.random() * bestMoves.size());
@@ -96,6 +58,7 @@ public class ComputerTurn extends AsyncTask<String, String, String>
 
     @Override
     protected String doInBackground(String... strings) {
+
         if (myGame.whoseTurn() != CheckersGame.RED) return null;
         Move moves[] = myGame.getMoves();
 
@@ -125,22 +88,17 @@ public class ComputerTurn extends AsyncTask<String, String, String>
 
             ArrayList<Move> selectedMoves = new ArrayList<>();
 
-            int curScore = -1;
+
             for (Move option : moves) {
                 int score = option.captures.size();
                 Piece startPiece = myGame.getBoard().getPiece(option.start());
-                if (option.kings && !startPiece.isKing())
-                {
-                    score += 2;
-                }
-                if (score > curScore) {
+
+
                     //selectedMove = option;
                     selectedMoves.clear();
                     selectedMoves.add(option);
-                    curScore = score;
-                } else if (score == curScore) {
-                    selectedMoves.add(option);
-                }
+
+
             }
 
             selectedMove = selectedMoves.get((int)(selectedMoves.size() * Math.random()));
@@ -164,13 +122,17 @@ public class ComputerTurn extends AsyncTask<String, String, String>
 
     @Override
     protected void onPostExecute(String s) {
+
         super.onPostExecute(s);
+
+
         if (myGame.whoseTurn() == CheckersGame.RED) {
             if (selectedMove != null) {
                 myGame.makeMove(selectedMove);
                 myActivity.prepTurn();
             } else {
                 // player wins
+
                 myActivity.statusText.setText("You won!");
             }
         }
