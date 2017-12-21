@@ -3,7 +3,7 @@ package mato.checkers.game;
 import java.util.ArrayList;
 
 /**
- * Created by Greg on 8/6/2017.
+ *
  */ // data for complete board state
 public class Board {
     //private CheckersGame checkersGame;

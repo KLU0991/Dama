@@ -3,7 +3,7 @@ package  mato.checkers.game;
 import java.util.ArrayList;
 
 /**
- * Created by Greg on 8/6/2017.
+ *
  */ // move as a sequence of positions and list of capture positions
 public class Move {
     public ArrayList<Position> positions;

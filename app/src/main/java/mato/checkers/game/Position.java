@@ -1,7 +1,7 @@
 package  mato.checkers.game;
 
 /**
- * Created by Greg on 8/6/2017.
+ *
  */ // x y coordinate
 public class Position {
     public final int x;
