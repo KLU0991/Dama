@@ -14,11 +14,13 @@ import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.database.Cursor;
 import java.util.ArrayList;
 
 import mato.checkers.game.CheckersGame;
 import mato.checkers.game.Board;
+import mato.checkers.game.DBHelper;
+
 import mato.checkers.game.Piece;
 import mato.checkers.game.Position;
 import mato.checkers.game.Move;
@@ -27,10 +29,12 @@ public class MyCheckersActivity extends AppCompatActivity {
     private CheckersGame gamelogic;
     private CheckersLayout checkersView;
     public TextView statusText;
+     public  int score=0;
+    public int bestcore;
 
     private String prefDifficulty;
     private boolean prefAllowAnyMove;
-
+    private DBHelper mydb;
     private static final String DIFFICULTY = "pref_difficulty";
     private static final String ANY_MOVE = "pref_any_move";
 
@@ -80,6 +84,8 @@ public class MyCheckersActivity extends AppCompatActivity {
                 Toast.makeText(this,
                         "New Game",
                         Toast.LENGTH_SHORT).show();
+
+               // mydb.insertContact("score","52");
                 restart();
                 break;
             case R.id.about_menu_icon:
@@ -129,6 +135,7 @@ public class MyCheckersActivity extends AppCompatActivity {
 
     // restart game
     private void restart() {
+
         clearComputerTask();
         gamelogic.restart();
         checkersView.refresh();
@@ -169,8 +176,12 @@ public class MyCheckersActivity extends AppCompatActivity {
 
         } else if (turn == CheckersGame.BLACK) {
 
-            statusText.setText("Black's (player's) turn.");
+            // rs = mydb.getData("52");
+            ///rs.moveToFirst();
+           // String best = rs.getString(rs.getColumnIndex(DBHelper.CONTACTS_COLUMN_TYPE));***
+            statusText.setText("Black's (player's) turn.\n"+"Your Score: "+score);
             tick.start();
+            score=score+1;
             // prep for human player turn
             ArrayList<Piece> selectablePieces = new ArrayList<>();
             Move moves[] = gamelogic.getMoves();
@@ -198,44 +209,7 @@ public class MyCheckersActivity extends AppCompatActivity {
     }
 
     // difficulty easy: randomly pick a move
-    private void makeComputerTurn(){
-    final MediaPlayer sound=MediaPlayer.create(this,R.raw.win);
 
-        if (gamelogic.whoseTurn() == CheckersGame.RED) {
-            Move moves[] = gamelogic.getMoves();
-            if (moves.length > 0) {
-                Move choice;
-                if (prefDifficulty.equals("Easy")) {
-                    int num = (int)(moves.length * Math.random());
-                    choice = moves[num];
-                } else {
-                    // find best move by capture amount vs king
-                    choice = moves[0];
-                    int curScore = -1;
-                    for (Move option : moves) {
-                        int score = option.captures.size();
-                        Piece startPiece = gamelogic.getBoard().getPiece(option.start());
-                        if (option.kings && !startPiece.isKing())
-                        {
-                            score += 2;
-                        }
-                        if (score > curScore) {
-                            choice = option;
-                            curScore = score;
-                        }
-                    }
-                }
-                gamelogic.makeMove(choice);
-                prepTurn();
-            } else {
-                // sound.start();player wins
-               // sound.start();
-                //wind.start();
-
-                statusText.setText("You won!");
-            }
-        }
-    }
 
     // check which piece is selected
     public boolean isSelected(Piece piece) {

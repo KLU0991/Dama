@@ -291,31 +291,5 @@ public class Board {
         }
     }
 
-    public int pseudoScore() {
-        int score = 0;
-        int blackPieces = 0;
-        int redPieces = 0;
-        for (int x = 0; x < 8; x++) {
-            for (int y = 0; y < 8; y++) {
-                Piece piece = board[x][y];
-                if (piece != null) {
-                    int weight = piece.isKing() ? 5 : 2;
-                    if (piece.getColor() == CheckersGame.RED) {
-                        weight *= -1;
-                        redPieces++;
-                    } else {
-                        blackPieces++;
-                    }
-                    score += weight;
-                }
-            }
-        }
-        if (blackPieces == 0) {
-            score = -1000;
-        } else if (redPieces == 0) {
-            score = 1000;
-        }
 
-        return score;
-    }
 }
